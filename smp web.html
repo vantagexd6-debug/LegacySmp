@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LEGACY SMP | Minecraft Server</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Inter, sans-serif;
+            color: white;
+            background:
+                linear-gradient(rgba(5, 8, 12, 0.78), rgba(5, 8, 12, 0.95)),
+                url("https://images.unsplash.com/photo-1607513746994-51f730a44832?auto=format&fit=crop&w=2000&q=80");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 75px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 7%;
+            background: rgba(5, 7, 10, 0.78);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: "Press Start 2P", cursive;
+            font-size: 18px;
+            color: #7cff72;
+            text-shadow: 0 0 18px rgba(124,255,114,0.45);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: #ddd;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.25s;
+        }
+
+        nav a:hover {
+            color: #7cff72;
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 20px 80px;
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        .small-title {
+            color: #7cff72;
+            font-size: 13px;
+            letter-spacing: 4px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-family: "Press Start 2P", cursive;
+            font-size: clamp(42px, 8vw, 90px);
+            margin-bottom: 25px;
+            color: white;
+            text-shadow:
+                0 5px 0 #151515,
+                0 0 35px rgba(255,255,255,0.15);
+        }
+
+        .hero p {
+            color: #c9c9c9;
+            font-size: 18px;
+            max-width: 650px;
+            margin: auto;
+            line-height: 1.7;
+        }
+
+        /* ================= SERVER CARD ================= */
+
+        .server-card {
+            margin: 45px auto 0;
+            max-width: 650px;
+            padding: 28px;
+            background: rgba(15, 18, 23, 0.85);
+            border: 1px solid rgba(124,255,114,0.18);
+            border-radius: 18px;
+            box-shadow: 0 20px 70px rgba(0,0,0,0.45);
+            backdrop-filter: blur(12px);
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: #888;
+            box-shadow: 0 0 12px #888;
+        }
+
+        .online .dot {
+            background: #55ff55;
+            box-shadow: 0 0 15px #55ff55;
+        }
+
+        .offline .dot {
+            background: #ff4545;
+            box-shadow: 0 0 15px #ff4545;
+        }
+
+        #statusText {
+            color: #55ff55;
+        }
+
+        .offline #statusText {
+            color: #ff5555;
+        }
+
+        .ip-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background: #090b0e;
+            padding: 15px 17px;
+            border-radius: 10px;
+            border: 1px solid #222;
+        }
+
+        .ip {
+            font-family: monospace;
+            color: #eee;
+            font-size: 15px;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            border: none;
+            background: #7cff72;
+            color: #071006;
+            padding: 11px 16px;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(124,255,114,0.2);
+        }
+
+        .players {
+            margin-top: 17px;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 14px 22px;
+            border-radius: 9px;
+            font-weight: 800;
+            transition: 0.25s;
+        }
+
+        .btn-discord {
+            background: #5865f2;
+            color: white;
+        }
+
+        .btn-youtube {
+            background: #ff3333;
+            color: white;
+        }
+
+        .btn-instagram {
+            background: #d62976;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            filter: brightness(1.12);
+        }
+
+        /* ================= SECTIONS ================= */
+
+        section {
+            padding: 100px 7%;
+        }
+
+        .section-title {
+            font-family: "Press Start 2P", cursive;
+            text-align: center;
+            font-size: 25px;
+            margin-bottom: 55px;
+        }
+
+        .section-title span {
+            color: #7cff72;
+        }
+
+        /* ================= INFO ================= */
+
+        .info-grid {
+            max-width: 1000px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-card {
+            background: rgba(14,17,22,0.85);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 30px;
+            border-radius: 16px;
+            transition: 0.25s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(124,255,114,0.35);
+        }
+
+        .info-card h3 {
+            color: #7cff72;
+            margin-bottom: 12px;
+        }
+
+        .info-card p {
+            color: #aaa;
+            line-height: 1.7;
+        }
+
+        /* ================= RULES ================= */
+
+        .rules {
+            max-width: 750px;
+            margin: auto;
+        }
+
+        .rule {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: rgba(14,17,22,0.85);
+            padding: 20px 23px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            border-left: 3px solid #7cff72;
+        }
+
+        .rule-number {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #7cff72;
+            color: #071006;
+            border-radius: 8px;
+            font-weight: 900;
+        }
+
+        /* ================= SOCIAL ================= */
+
+        .social {
+            text-align: center;
+        }
+
+        .social p {
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            text-align: center;
+            padding: 35px 20px;
+            background: rgba(3,5,7,0.9);
+            color: #777;
+            border-top: 1px solid rgba(255,255,255,0.07);
+        }
+
+        footer strong {
+            color: #7cff72;
+        }
+
+        /* ================= ANIMATION ================= */
+
+        .fade {
+            animation: fadeUp 1s ease forwards;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media(max-width: 700px) {
+
+            nav {
+                padding: 0 20px;
+            }
+
+            .logo {
+                font-size: 13px;
+            }
+
+            nav ul {
+                display: none;
+            }
+
+            .hero {
+                padding-top: 110px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .server-card {
+                padding: 20px;
+            }
+
+            .ip-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .copy-btn {
+                width: 100%;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 75px 20px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav>
+        <div class="logo">LEGACY SMP</div>
+
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#info">Server</a></li>
+            <li><a href="#rules">Rules</a></li>
+            <li><a href="#community">Community</a></li>
+        </ul>
+    </nav>
+
+
+    <!-- ================= HERO ================= -->
+
+    <section class="hero" id="home">
+
+        <div class="hero-content fade">
+
+            <div class="small-title">WELCOME TO</div>
+
+            <h1>LEGACY SMP</h1>
+
+            <p>
+                Build your legacy, explore the world,
+                and enjoy a peaceful Minecraft survival experience.
+            </p>
+
+
+            <!-- SERVER STATUS -->
+
+            <div class="server-card">
+
+                <div class="status" id="statusBox">
+                    <span class="dot"></span>
+                    <span id="statusText">CHECKING...</span>
+                </div>
+
+                <div class="ip-box">
+
+                    <span class="ip" id="serverIP">
+                        legacy-13.hexacraft.fun:25583
+                    </span>
+
+                    <button class="copy-btn" onclick="copyIP()">
+                        COPY IP
+                    </button>
+
+                </div>
+
+                <div class="players" id="players">
+                    Checking server...
+                </div>
+
+            </div>
+
+
+            <!-- SOCIAL BUTTONS -->
+
+            <div class="buttons">
+
+                <a
+                    class="btn btn-discord"
+                    href="https://discord.gg/m5cGknNkcK"
+                    target="_blank">
+                    💬 Discord
+                </a>
+
+                <a
+                    class="btn btn-youtube"
+                    href="https://youtube.com/@notclacxy?si=3AecVgyjYmTNt3Am"
+                    target="_blank">
+                    ▶ YouTube
+                </a>
+
+                <a
+                    class="btn btn-instagram"
+                    href="https://www.youtube.com/@NotClacxy"
+                    target="_blank">
+                    📸 Instagram
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= SERVER INFO ================= -->
+
+    <section id="info">
+
+        <h2 class="section-title">
+            SERVER <span>INFO</span>
+        </h2>
+
+        <div class="info-grid">
+
+            <div class="info-card">
+                <h3>🌍 Server IP</h3>
+                <p>
+                    legacy-13.hexacraft.fun:25583
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>👑 Owner</h3>
+                <p>
+                    NotClacxy
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>⛏️ Gameplay</h3>
+                <p>
+                    Peaceful Minecraft survival.
+                    Build, explore and enjoy the world with other players.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>💚 Community</h3>
+                <p>
+                    Join our Discord and stay connected
+                    with the LEGACY SMP community.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= RULES ================= -->
+
+    <section id="rules">
+
+        <h2 class="section-title">
+            SERVER <span>RULES</span>
+        </h2>
+
+        <div class="rules">
+
+            <div class="rule">
+                <div class="rule-number">1</div>
+                <div>No griefing</div>
+            </div>
+
+            <div class="rule">
+                <div class="rule-number">2</div>
+                <div>No exploding</div>
+            </div>
+
+            <div class="rule">
+                <div class="rule-number">3</div>
+                <div>No stealing</div>
+            </div>
+
+            <div class="rule">
+                <div class="rule-number">4</div>
+                <div>Peaceful play</div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= COMMUNITY ================= -->
+
+    <section id="community">
+
+        <div class="social">
+
+            <h2 class="section-title">
+                JOIN THE <span>COMMUNITY</span>
+            </h2>
+
+            <p>
+                Follow LEGACY SMP and stay connected.
+            </p>
+
+            <div class="buttons">
+
+                <a
+                    class="btn btn-discord"
+                    href="https://discord.gg/m5cGknNkcK"
+                    target="_blank">
+                    💬 Join Discord
+                </a>
+
+                <a
+                    class="btn btn-youtube"
+                    href="https://www.youtube.com/NotClacxy"
+                    target="_blank">
+                    ▶ Subscribe
+                </a>
+
+                <a
+                    class="btn btn-instagram"
+                    href="https://www.instagram.com/notclacxy"
+                    target="_blank">
+                    📸 Follow
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <p>
+            © 2026 <strong>LEGACY SMP</strong>
+            · Owned by <strong>NotClacxy</strong>
+        </p>
+
+    </footer>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        const serverAddress = "legacy-13.hexacraft.fun:25583";
+
+        /*
+            LIVE SERVER STATUS
+            Uses mcsrvstat.us API
+        */
+
+        async function checkServer() {
+
+            const statusBox = document.getElementById("statusBox");
+            const statusText = document.getElementById("statusText");
+            const players = document.getElementById("players");
+
+            try {
+
+                const response = await fetch(
+                    `https://api.mcsrvstat.us/3/${serverAddress}`
+                );
+
+                const data = await response.json();
+
+                if (data.online) {
+
+                    statusBox.classList.remove("offline");
+                    statusBox.classList.add("online");
+
+                    statusText.textContent = "ONLINE";
+
+                    if (data.players) {
+
+                        players.textContent =
+                            `${data.players.online} / ${data.players.max} Players Online`;
+
+                    } else {
+
+                        players.textContent =
+                            "Server is online";
+
+                    }
+
+                } else {
+
+                    statusBox.classList.remove("online");
+                    statusBox.classList.add("offline");
+
+                    statusText.textContent = "OFFLINE";
+
+                    players.textContent =
+                        "Server is currently offline";
+
+                }
+
+            } catch (error) {
+
+                statusText.textContent = "UNKNOWN";
+
+                players.textContent =
+                    "Unable to check server status";
+
+            }
+
+        }
+
+
+        /*
+            COPY SERVER IP
+        */
+
+        function copyIP() {
+
+            navigator.clipboard.writeText(serverAddress);
+
+            const button = document.querySelector(".copy-btn");
+
+            const oldText = button.textContent;
+
+            button.textContent = "✓ COPIED!";
+
+            setTimeout(() => {
+
+                button.textContent = oldText;
+
+            }, 1500);
+
+        }
+
+
+        /*
+            CHECK STATUS WHEN PAGE LOADS
+        */
+
+        checkServer();
+
+
+        /*
+            AUTO REFRESH STATUS EVERY 30 SECONDS
+        */
+
+        setInterval(checkServer, 30000);
+
+    </script>
+
+</body>
+</html>
